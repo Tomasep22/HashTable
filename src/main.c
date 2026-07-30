@@ -80,18 +80,55 @@ struct pair* initialize_item(char *key, char *value)
     return p;
 }
 
+struct table* initialize_table(int size)
+{
+
+    struct table *t = malloc(sizeof(struct table));
+
+    if(!t)
+    {
+        return NULL;
+    }
+
+    t->items = calloc(size,sizeof(struct pair*));
+
+    if(!(t->items))
+    {
+        free(t);
+        return NULL;
+    }
+
+    t->c = size;
+    t->i = 0;
+
+    return t;
+}
+
+void delete_item(struct pair* item)
+{
+    free(item->value);
+    free(item->key);
+    free(item);
+}
+
+void delete_table(struct table* table)
+{
+    int i = 0;
+    while((table->c) > i){
+        if(table->items[i] != 0){
+            delete_item(table->items[i]);
+        }
+        i++;
+    }
+    free(table->items);
+    free(table);
+}
+
 
 
 int main(void)
 {
-    /*
-    struct pair p;
-
-    p.key = "cat";
-    p.value = "meow";
-
-    struct table t;
-    */
+    struct table *t = initialize_table(53);
 
     char *key = "cat";
     char *value = "meow";
@@ -99,4 +136,16 @@ int main(void)
     struct pair *p = initialize_item(key,value);
 
     printf("%s\n%s\n",p->key,p->value);
+
+    int i = ((131*131*99) + (131*97) + 116) % 53;
+    printf("%d\n",i);
+
+    (t->items)[i] = p;
+
+    printf("%s\n",(t->items)[i]->key);
+
+    delete_table(t);
+
+    t = NULL;
+    p = NULL;
 }
