@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 // este es el struct para cada clave-valor
 
@@ -124,6 +125,24 @@ void delete_table(struct table* table)
     free(table);
 }
 
+int hash_function(char* s, int base, int mod)
+{
+    int len = strlen(s);
+
+    if (!len){
+        return 0;
+    }
+
+    unsigned long long r = s[0];
+
+    for(int i = 1; i<len; i++){
+        r *= base;
+        r += s[i];
+    }
+
+    return (int)(r%mod);
+}
+
 
 
 int main(void)
@@ -148,4 +167,11 @@ int main(void)
 
     t = NULL;
     p = NULL;
+
+    printf("%d\n",*key);
+    int hash = hash_function(key,131,53);
+    printf("%d\n",hash);
+
+
+
 }
