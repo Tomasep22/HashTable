@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 // este es el struct para cada clave-valor
 
@@ -143,6 +142,14 @@ int hash_function(char* s, int base, int mod)
     return (int)(r%mod);
 }
 
+int get_hash(char* s, int base, int base2, int mod, int col)
+{
+    int hash_a = hash_function(s,base,mod);
+    int hash_b = hash_function(s,base2,mod);
+    int i = (hash_a + col * (hash_b + 1)) % mod;
+    return i;
+
+}
 
 
 int main(void)
@@ -152,26 +159,87 @@ int main(void)
     char *key = "cat";
     char *value = "meow";
 
+    char *key2 = "amp";
+    char *value2 = "current";
+
+    char *key3 = "aca";
+    char *value3 = "alla";
+
+
     struct pair *p = initialize_item(key,value);
 
+    struct pair *p2 = initialize_item(key2,value2);
+
+    struct pair *p3 = initialize_item(key3,value3);
+
+
     printf("%s\n%s\n",p->key,p->value);
+    printf("%s\n%s\n",p2->key,p2->value);
+    printf("%s\n%s\n",p3->key,p3->value);
 
-    int i = ((131*131*99) + (131*97) + 116) % 53;
-    printf("%d\n",i);
 
-    (t->items)[i] = p;
+    int hash = hash_function(key,131,53);
+    int hash2 = hash_function(key2,131,53);
+    int hash3 = hash_function(key3,131,53);
 
-    printf("%s\n",(t->items)[i]->key);
+    printf("%d\n",hash);
+    printf("%d\n",hash2);
+    printf("%d\n",hash3);
+
+    int c = 0;
+    int c2 = 0;
+    int c3 = 0;
+
+    if(t->items[hash] == NULL){
+        t->items[hash] = p;
+    }
+    else {
+            while(t->items[hash] != NULL)
+                {
+                    c++;
+                    hash = get_hash(key,131,137,53,c);
+                }
+            t->items[hash] = p;
+    }
+
+    if(t->items[hash2] == NULL){
+        t->items[hash2] = p2;
+    }
+    else {
+        while(t->items[hash2] != NULL)
+            {
+                c2++;
+                hash2 = get_hash(key2,131,137,53,c2);
+            }
+        t->items[hash2] = p2;
+    }
+
+    if(t->items[hash3] == NULL){
+        t->items[hash3] = p3;
+    }
+    else {
+        while(t->items[hash3] != NULL)
+            {
+                c3++;
+                hash3 = get_hash(key3,131,137,53,c3);
+            }
+        t->items[hash3] = p3;
+    }
+
+    printf("%s %s\n", t->items[hash]->key, t->items[hash]->value);
+    printf("%s %s\n", t->items[hash2]->key, t->items[hash2]->value);
+    printf("%s %s\n", t->items[hash3]->key, t->items[hash3]->value);
+
+    printf("%d\n", hash);  // 21
+    printf("%d\n", hash2); // 5
+    printf("%d\n", hash3); // 51
 
     delete_table(t);
 
     t = NULL;
     p = NULL;
-
-    printf("%d\n",*key);
-    int hash = hash_function(key,131,53);
-    printf("%d\n",hash);
-
+    p2 = NULL;
+    p3 = NULL;
 
 
 }
